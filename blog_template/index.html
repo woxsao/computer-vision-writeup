@@ -1,8 +1,10 @@
 <html>
 <head>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-
+	<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+	<script id="MathJax-script" async
+			src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+	</script>
 <link rel="shortcut icon" href="images/icon.ico">
 <style type="text/css">
 	body {
@@ -44,6 +46,7 @@
 	.margin-right-block {
 			font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;#"Avenir";
 			font-size: 14px;
+			display: flex;
 			width: 25%; /* Change this percentage as needed */
 			max-width: 256px; /* Optional: Maximum width */
 			position: relative;
@@ -183,8 +186,10 @@
 
 </style>
 
-	  <title>The Platonic Representation Hypothesis</title>
-      <meta property="og:title" content="The Platonic Representation Hypothesis" />
+	  <title>
+		ViTalSeg: A method for X-ray structure segmentation</title>
+      <meta property="og:title" content="
+	  ViTalSeg: A method for X-ray structure segmentation" />
 			<meta charset="UTF-8">
   </head>
 
@@ -197,23 +202,26 @@
 						<table class="header" align=left>
 								<tr>
 									<td colspan=4>
-										<span style="font-size: 32px; font-family: 'Courier New', Courier, monospace; /* Adds fallbacks */">A Grand Unified Theory of Deep Learning</span>
+										<span style="font-size: 32px; font-family: 'Courier New', Courier, monospace; /* Adds fallbacks */">ViTalSeg: A method for X-ray structure segmentation</span>
 									</td>
 								</tr>
-								<tr>
+								<tr>	
+									<td align=left>
+										<span style="font-size:17px"><a href="alvinqz@mit.edu">Alvin Zheng</a></span>
+									</td>
 										<td align=left>
-												<span style="font-size:17px"><a href="your_website">Your name</a></span>
+												<span style="font-size:17px"><a href="mochan@mit.edu">Monica Chan</a></span>
 										</td>
+										
 										<td align=left>
-												<span style="font-size:17px"><a href="your_partner's_website">Your partner's name</a></span>
+											<span style="font-size:17px"><a href="yiboc@mit.edu">Yibo Cheng</a></span>
 										</td>
 								<tr>
-									<td colspan=4 align=left><span style="font-size:18px">Final project for 6.7960, MIT</span></td>
+									<td colspan=4 align=left><span style="font-size:18px">Final project for 6.8300, MIT</span></td>
 								</tr>
 						</table>
 					</div>
-					<div class="margin-right-block">
-					</div>
+					
 		</div>
 
 		<div class="content-margin-container" id="intro">
@@ -222,17 +230,12 @@
           <div style="position:fixed; max-width:inherit; top:max(20%,120px)">
               <b style="font-size:16px">Outline</b><br><br>
               <a href="#intro">Introduction</a><br><br>
-              <a href="#does_x_do_y">Does X do Y?</a><br><br>
+              <a href="#background">Background</a><br><br>
+			  <a href="#methods_and_experiments">Methods and Experiments</a><br><br>
+			  <a href="#results_and_analysis">Results and Analysis</a><br><br>
               <a href="#implications_and_limitations">Implications and limitations</a><br><br>
           </div>
 				</div>
-		    <div class="main-content-block">
-            <!--You can embed an image like this:-->
-            <img src="./images/your_image_here.png" width=512px/>
-		    </div>
-		    <div class="margin-right-block">
-						Caption for the image.
-		    </div>
 		</div>
 
     <div class="content-margin-container" id="intro">
@@ -240,75 +243,352 @@
 				</div>
 		    <div class="main-content-block">
 						<h1>Introduction</h1>
-            Motivate your project. What question are you asking. Why is it unanswered so far? What gap in the literature or practice are you filling?
-            Why is it important?
-		    </div>
-		    <div class="margin-right-block">
-						Margin note that clarifies some detail #main-content-block for intro section.
+						Conventional 2D X-rays remain a fundamental tool in medicine due to its low cost, speed, and availability. 
+						However, a major limitation of X-ray imaging lies in the data imaging process itself: X-ray photons’ high 
+						energy passes through the body and projects all internal structures into a single plane, so the X-rays do 
+						not exhibit occlusions <a href="#ref_1">[1]</a>. 
+						This makes reading the X-rays particularly difficult because organs overlap. 
+						<br><br>
+						Three dimensional imaging techniques such as CT scans resolve those problems by providing volumetric data that 
+						separate structures in depth. They enable clear delineation, but are more resource-intensive, less widely available,
+						 and expose patients to higher doses of radiation. 
+						<br><br>
+						Training a model to be able to segment X-rays would allow readings to be more clear and increase diagnostic efficiency. Unfortunately, obtaining manual labels for X-rays is extremely labor intensive since it requires trained medical personnel to collaborate with computer scientists, which necessitates an alternative source of data. To address this, we leverage the fact that CT scans already include 3D segmentations. By projecting the volumes into two dimensions, we generate synthetic X-rays with pixel wise labels. CT scan labels are easy to acquire due to their 3D nature, making them ideal to minimize manual labor of labelling. 
+						<br><br>
+						<b>
+							In this work, we propose a multimodal segmentation model, ViTALSeg 
+						(ViT based Anatomical Language-guided Segmentation), that learns to 
+						segment anatomical structures in X-rays conditioned on natural language 
+						prompts. Our method combines vision and language models to enable flexible, 
+						prompt-based anatomical understanding. 
+						</b>
+						
+						
 		    </div>
 		</div>
 
-		<div class="content-margin-container" id="does_x_do_y">
+		<div class="content-margin-container" id="background">
 				<div class="margin-left-block">
 				</div>
 		    <div class="main-content-block">
-					<h1>Does X do Y?</h1>
-				  It is well known that Y does Y. And this has raised the question does X do Y? Because if Y does Y then it stands to reason that X does Y.
-          But we cannot answer this until we realize the Z implies Y and X can be linked to Z.<br><br>
+					<h1>Background</h1>
+					Recent advances in medical imaging research have explored the use of synthetic 
+					data to bridge the gap between the clarity of CT images and the practicality of 
+					X-rays. One promising direction involves generating synthetic X-ray projections, 
+					known as digitally reconstructed radiographs (DRRs), from fully-labeled 3D CT 
+					volumes. Previous work in this area has shown that models trained on synthetic 
+					X-ray data generated from CT scans can outperform models trained solely on real 
+					X-rays, particularly in challenging or underrepresented conditions. In particular, 
+					using synthetic data has been shown to improve model robustness to variations in patient 
+					pose, anatomy, and image acquisition settings <a href="#ref_2">[2]</a>. 
 
-          Now let's write some math!<br>
-          <center>
-            <math xmlns="http://www.w3.org/1998/Math/MathML">
-              <mrow>
-                <mrow>
-                  <mo>&#x2202;</mo>
-                  <mi>y</mi>
-                </mrow>
-                <mo>/</mo>
-                <mrow>
-                  <mo>&#x2202;</mo>
-                  <mi>x</mi>
-                </mrow>
-              </mrow>
-              <mo>=</mo>
-              <mi>x</mi>
-            </math>
-          </center>
-          <br>
-          It's probably best to ask an LLM to help do the web
-          formatting for math. You can tell it "convert this latex equation into MathML: $$\frac{\partial dy}{\partial dx} = x$$"
-          But it took me a few tries. So, if you get frustrated, you can embed an image of the equation, or use other packages for
-          rendering equations on webpages.
-		    </div>
-		    <div class="margin-right-block" style="transform: translate(0%, -100%);"> <!-- you can move the margin notes up and down with translate -->
-          Interestingly, Plato also asked if X does Y, in <a href="#ref_1">[1]</a>.
+					However, while prior work has largely focused on segmenting specific anatomical structures such as the clavicle, we aim to leverage the 3DSegmentator dataset to generate synthetic, fully-labeled X-rays and train a foundation model capable of segmenting a wide range of anatomical components, and we chose the thorax area as a proof of concept.
+					<br><br>		
 		    </div>
 		</div>
 
-		<div class="content-margin-container">
+		<div class="content-margin-container", id="methods_and_experiments">
 				<div class="margin-left-block">
 				</div>
 		    <div class="main-content-block">
-            <h1>Another section</h1>
-            In this section we embed a video:
-						<video class='my-video' loop autoplay muted style="width: 725px">
-								<source src="./images/mtsh.mp4" type="video/mp4">
-						</video>
-		    </div>
-		    <div class="margin-right-block">
-					A caption for the video could go here.
-		    </div>
+            <h1>Methods and Experiments</h1>
+			In this section we will discuss the methods we used to generate our 
+			dataset, the model architecture we chose, and the training process. We trained
+			two models: a hybrid Vision Transformer (ViT) model and a baseline U-Net model
+			to use as a comparison baseline.
+            <!--Add subsections-->
+			<h3>Training Dataset Generation</h3>
+			<style>
+				.image-row {
+				  display: flex;
+				  flex-direction: row;
+				  flex-wrap: nowrap;  /* Ensures all images stay on one line */
+				  gap: 8px;           /* Optional: spacing between images */
+				  align-items: center;
+				}
+				.image-row img {
+				  width: 200px;
+				  height: auto;
+				}
+			  </style>
+			
+			<div class="image-row">
+				<img src="./images/AP_output.png" alt="AP View" />
+				<img src="./images/PA_output.png" alt="PA View" />
+				<img src="./images/LLAT_output.png" alt="LLAT View" />
+				<img src="./images/RLAT_output.png" alt="RLAT View" />
+			  </div>
+			<br><br>
+			To train and evaluate our synthetic X-ray segmentation, we begin by generating 2D DRR’s from annotated 3D CT scans from TotalSegmentator. This dataset provides 1228 high resolution CT scans of various anatomical regions with 118 labelled organ and tissue segmentations per scan. We focused on scans of the thoracic region, that is the region of the body that spans the chest area: lungs, heart, ribcage, and spine. We parsed the metadata file provided with the dataset to identify relevant scans. Each scan’s segmentations were originally stored as separate files per anatomical label. 
+			<br><br>
+			We employed the DiffDRR library to generate high fidelity X-ray projections from the 
+			3D CT volumes. To enable gradient-based learning for medical imaging tasks, we leverage DiffDRR, 
+			an open-source differentiable renderer that efficiently generates digitally reconstructed 
+			radiographs (DRRs) and computes their derivatives with respect to image geometry parameters. 
+			Built on PyTorch, DiffDRR exploits GPU-accelerated tensor operations and automatic 
+			differentiation to provide a fast and flexible framework for incorporating DRR generation as a 
+			differentiable operator <a href="#ref_3">[3]</a>. This capability makes it particularly well-suited for deep learning 
+			applications such as image reconstruction, pose estimation, and slice-to-volume registration.
+			Specifically, we used a DRR renderer initialized with each CT volume and 
+			its corresponding segmentation map. For each scan, we generated DRR’s from four cardinal 
+			views: AP (Anterior-Posterior), PA (Posterior-Anterior), LLAT (Left lateral), and RLAT 
+			(Right Lateral). 
+			<h3>Model Choice</h3>
+			<!-- Add image-->
+			<img src="./images/model_block_diagram.png" width=500px/>
+			To perform anatomical segmentation on synthetic X-ray images, we implemented a hybrid Vision Transformer (ViT) architecture that incorporates a pretrained BERT backbone for cross-modal text conditioning. We trained two versions of ViTALSeg: one using standard inputs, and another augmented with geometric transformations including rotations, translations, and scaling. The purpose of these augmentations was to encourage the model to learn semantically meaningful anatomical representations rather than relying on spatial memorization of organ positions.
+			<br><br>
+			<h4>Data Preparation</h4>
+			The input to our model is a 3D synthetic X-ray volume of shape 200×200×118, where each of the 118 channels represents a binary segmentation mask for a specific anatomical structure. For example, img[:, :, 1] represents the mask corresponding to the spleen. We treat each slice as an individual data point, forming a dataset of 118 examples per scan.
+			<br><br>
+			Each data point consists of:
+			<ul>
+				<li>The full synthetic X-ray scan (200×200)</li>
+				<li>A corresponding binary mask highlighting a specific organ or structure</li>
+				<li>A natural language prompt describing the anatomical structure and viewpoint, such as: “Spleen in an anteroposterior view X-ray.”</li>
+			</ul>
+			This formulation enables text-conditioned training, where the model must segment a structure based on the provided prompt.
+			ViTALSeg was trained on roughly 37,500 datapoints, including anterior-posterior, posterior-anterior, and 45 degree offsets from those two views. The TotalSegmentator dataset contains 250 chest scans. Each CT scan contributed a total of 6 views and around 25 nonzero masks. Augmentations and scaling were applied to views for the version of ViTALSeg trained with augmentations. 
+			<h4>Text Encoder</h4>
+			We employ a pretrained BERT encoder from Hugging Face's Transformers library to 
+			process the textual prompts <a href="#ref_4">[4]</a>. The model uses 12 transformer layers with a hidden size 
+			of 768. To retain general language representations, we freeze the first 8 layers 
+			during training, fine-tuning only the final layers for the segmentation task.
+			<br><br>
+			The text inputs are first tokenized and padded to a maximum length of 256. These token sequences are then passed through the BERT encoder, resulting in contextualized embeddings for each token. These embeddings are later used as keys and values in the cross-attention mechanism of the vision decoder.
+			<h4>Visual Encoder</h4>
+			The visual encoder processes the X-ray image into a sequence of patch tokens, capturing both spatial and semantic features. It begins with a series of convolutional layers to project the input into 32×32 spatial patches, where each patch represents an 8×8 pixel region.
+			<br><br>
+			Each patch is then embedded into a vector and supplemented with a learnable positional encoding to preserve spatial structure. The encoder processes these tokens across multiple transformer layers, increasing the embedding dimension progressively from 96 → 192 → 384 → 768, forming a hierarchical visual representation. These features are passed to the decoder for integration with text embeddings.
+			<h4>Vision Decoder</h4>
+			The vision decoder fuses the image and text features using a series of multi-headed cross-attention layers. At each level of the visual hierarchy, the decoder uses the image tokens as queries, and the BERT-derived text embeddings as keys and values. This enables cross-modal attention, aligning the visual features to the text prompt.
+			<br><br>
+			Each attention head independently learns to focus on different aspects of the input, and the outputs are combined to capture diverse semantic relationships. The mathematical formulation for a single attention layer is:
+			<p>
+				\[
+				\text{Attn}(Q_{\text{img}}, K_{\text{t}}, V_{\text{t}}) = 
+				\text{softmax}\left(\frac{Q_{\text{img}} K_{\text{t}}^\top}{\sqrt{d_k}}\right) V_{\text{t}}
+				\]
+			  </p>
+			This cross-attention mechanism is applied across multiple levels of visual features, starting at lower embedding dimensions (e.g., 96) and continuing through to the full representation at 768. After each attention block, the output is element-wise added to the next stage of visual features, progressively refining the alignment between text and image.
+			<br><br>
+			This multi-scale attention strategy allows the model to learn general low-level features at shallow depths, and more detailed, task-specific features at higher levels.
+			<h4>Classification Multi-Layer Perceptron</h4>
+			The final fused features are passed to a classification head composed of two MLPs:
+			<br><br>
+			<ol>
+				<li>Binary Segmentation MLP: Predicts the presence of the anatomical structure described in the prompt.</li>
+				<li>Global Count MLP: Predicts the number of patches containing the structure.</li>
+			</ol>
+			This dual-output design allows the model to support both localization and quantification tasks from the same architecture.
+			<h4>Training Results</h4>
+			The binary segmentation loss measures how well the model classifies each patch in the image containing the structure (1) or not (0). We employ a sigmoid focal loss that is useful for object detection tasks and helps especially in cases where the structure of interest is small or localized such as this segmentation task. 
+			<p>
+				\[
+			\mathcal{L}_{\text{focal}} = -\frac{1}{N} \sum_{i=1}^{N} \left[
+			\alpha (1 - \hat{b}_i)^\gamma b_i \log(\hat{b}_i)
+			(1 - \alpha) \hat{b}_i^\gamma (1 - b_i) \log(1 - \hat{b}_i)
+			\right]
+			\]
+			</p>
+			The count loss is just a simple mean squared error (MSE) loss across the counts per patch. We also employ a consistency loss to ensure that the local patch level predictions from the binary counts are globally consistent with the total predicted count. 
+			<p>
+				\[
+				\mathcal{L}_{\text{count}} = (\hat{c} - c)^2
+				\]
+			</p>
+			Consistency Loss:
+			<p>
+				\[
+				\mathcal{L}_{\text{consist}} = \frac{1}{N} \sum_{i=1}^{N}
+				s_i \cdot \left| \hat{b}_i - \text{clamp} \left( \frac{\hat{c}}{N}, 0, 1 \right) \right|
+				\]
+			</p>
+			Total loss:
+			<p>	
+				\[
+				\mathcal{L}_{\text{total}} =
+				\mathcal{L}_{\text{focal}} +
+				0.6 \cdot \mathcal{L}_{\text{count}} +
+				0.8 \cdot \mathcal{L}_{\text{consist}}
+				\]
+			</p>
+			Our final training loss for our model with augmentations was: 70.2889
+			<br><br>
+			Our final training loss for model without augmentations was: 15.5772
+			<br><br>
+			Our validation loss plotted below is the validation loss on the real X-rays 
+			discussed in the Results and Analysis section. 
+			<img src="./images/vit_v0_loss.png" width=600px/>
+			<center>
+				<i>The above figure is the model trained with no augmentations.</i>
+			</center>
+			<img src="./images/vit_v1_loss.png" width=600px/>
+			<center>
+				<i>The above figure is the model trained with augmentations.</i>
+		    </center>
+			<center>
+				<i>We ended up fine tuning the model further for another 30 epochs
+					but have unfortunately lost the training plot. In the end, the model trained
+					with augmentations ended up with a lower loss in both training and validation than
+					the model trained without augmentations.
+				</i>
+		    </center>
+			<h3>Baseline Model Choice</h3>
+			The second model follows a U-Net style encoder-decoder CNN structure, 
+			enhanced with a multi-scale context module. It inputs a 256 * 256 
+			single-channel X-ray and outputs a 256 * 256 segmentation map with 118 
+			channels (one per class). Since an X-ray is a 2-D projection of 3-D 
+			anatomy, several organs can occupy the same pixel column. Each pixel is 
+			classified into its corresponding anatomical categories and can belong to 
+			many classes simultaneously. 
+			<br><br>
+			<h4>Encoder</h4>
+			Our baseline model encoder employs ResNet-50, pre-trained on a large image dataset, and is used to extract feature representation at multiple scales. It has been adapted to grayscale by averaging its first-layer RGB weights and widening the receptive field with a stride-2 7*7 convolutional layer. Then, the four residual stages of ResNet progressively reduce spatial resolution from 256*256 down to 8*8 while expanding channel depth from 64 to 2048, capturing both fine lung fissures and large-scale thoracic context. Batch-normalization and ReLU are applied after each convolution to keep activation, and skip connections preserve gradient flow so the network can be trained end-to-end with the decoder. Intuitively, Encode helps the model understand what a heart border or a lung looks like. 
+			<h4>ASPP</h4>
+			The ASPP (Atrous Spatial Pyramid Pooling) module sits between the encoder and decoder. It applies parallel atrous convolutions with rates 1, 6, 12, 18 and a global average-pool branch. These different dilation factors allow the model to sample its own features at multiple effective fields. Small kernels preserve details of the organs, while large kernels capture the full cardiothoracic outline. The five feature tensors are then concatenated and passed through a 1*1 convolution to fuse all features and produce a context-rich, 256-channel tensor. 
+			<h4>Decoder</h4>
+			The decoder transforms the feature tensors back to pixel-level predictions. It first upsamples the ASPP output by bilinear interpolation, then merges it with skip features from earlier encoder stages via 1 × 1 convs—restoring fine spatial detail lost during pooling.  Each fusion step is followed by a pair of 3 × 3 convolutions, ReLU, and GroupNorm to refine boundaries and suppress checkerboard artefacts.
+			<h4>Decision Head</h4>
+			When the tensor is upsampled back to the original 256*256 pixel grid, a final 1 × 1 convolution generates the 118‑channel logit map, one channel per anatomical class.  During the training, these logits are fed directly to the loss functions (weights BCE, focal-Tversky, and Dice). At the evaluation or visualization stage, the logits are passed through a sigmoid to map them into the probability [0, 1], threshold, then yield binary masks. 
+			<h4>Training Results</h4>
+			We trained the U-Net model for 100 epochs and got a final training loss of: 0.022.
+			For our validation loss, we used the Dice coefficient loss, which is a measure of the overlap between two sets of data. It is defined as:
+			<p>
+				\[
+				Dice = \frac{2 |X \cap Y|}{|X| + |Y|}
+				\]
+			</p>
+			Where \(X\) is the predicted mask and \(Y\) is the ground truth mask. A dice value close to 1 indicates
+			that the predicted mask is very similar to the ground truth mask, while a value
+			close to 0 indicates that the predicted mask is very different from the ground truth mask. Our model achieved
+			a Dice value of 0.7259 on the validation set.
+			<img src="./images/unet_training.png" width=600px/>
 		</div>
+		    
+		</div>
+		<div class="content-margin-container" id="results_and_analysis">
+			<div class="margin-left-block">
+			</div>
+		<div class="main-content-block">
+			<h1>Results and Analysis</h1>
+			We want to determine the quality of our model when trained on real X-rays rather 
+			than just synthetic X-rays. To assess the effectiveness of our multimodal 
+			segmentation model, we conducted evaluations using the Japanese Society of 
+			Radiological Technology (JSRT) Dataset, which contains expertly annotated chest 
+			X-rays <a href="#ref_6">[6]</a>. This dataset was selected because it offers high-quality ground truth segmentations that were manually delineated by radiologists, providing a trusted benchmark for anatomical segmentation tasks. However, one limitation we discovered of most hand labelled datasets is that they are of limited organs, in the case of JSRT the only labels are of the lungs and the heart.
+			<br><br>
+			When comparing the output of the version of ViTalSeg with augmentations vs. without, the training loss of the model with augmentations was higher for the model with augmentations. However, the results of the model with augmentations is qualitatively better particularly on small regions such as the heart:
+			<style>
+				.image-row-wide {
+				  display: flex;
+				  flex-direction: row;
+				  flex-wrap: nowrap;  /* Ensures all images stay on one line */
+				  gap: 0px;           /* Optional: spacing between images */
+				  align-items: center;
+				}
+				.image-row-wide img {
+				  width: 450px;
+				  height: auto;
+				}
+			  </style>
+			
+			<div class="image-row-wide">
+				<img src="./images/v0_281_heart_ap.png" width=1000px/>
+				<img src="./images/v1_281_heart_ap.png" width=1000px/>
+			  </div>
+			<center>
+				<i>The left figure is the model of ViTalSeg trained without augmentations, 
+					the right figure is the model of ViTalSeg trained with augmentations.
+					It is worth noting that the model trained with augmentations looks
+					more like the ground truth mask.
+				</i>
+			</center>
+			<br><br>
+			<img src="./images/unet_281_heart.png" width=500px/>
+			<center>
+				<i>The above figure is the U-Net model output for the same scan. 
+					We can see that the U-Net model is not able to segment the heart
+					as well as ViTalSeg.
+				</i>
+			</center>
+			<br><br>
+			The JSRT dataset includes anterior-posterior (AP) chest X-rays with detailed 
+			annotations for lung fields, heart boundaries, and clavicles, making it especially 
+			suitable for evaluating fine-grained segmentation performance on structures that 
+			also appear in our synthetic data training pipeline.
+			<br><br>
+			As a reference point, we compared our model’s performance 
+			against HybridGNet, a state-of-the-art anatomical 
+			segmentation model that was trained and validated on the 
+			JSRT dataset. HybridGNet achieves a Dice coefficient of 
+			0.970 when predicting anatomical landmarks, as reported in 
+			its evaluation on the JSRT dataset <a href="#ref_5">[5]</a>. This value serves as a 
+			performance baseline for evaluating the spatial accuracy of 
+			predicted masks and landmark-localized regions in chest 
+			X-rays. The HybridGNet paper discusses a per-pixel metric of the
+			Dice coefficient, which is a measure of the overlap between
+			two sets of data. 
+			<br><br>
+			<center>
+			<table border="1" cellpadding="8" cellspacing="0">
+				<thead>
+				  <tr>
+					<th>Model Choice</th>
+					<th>Dice Coefficient Mean</th>
+					<th>Standard Deviation</th>
+				  </tr>
+				</thead>
+				<tbody>
+				  <tr>
+					<td>HybridGNet</td>
+					<td>0.970</td>
+					<td>0.009</td>
+				  </tr>
+				  <tr>
+					<td>UNet Baseline</td>
+					<td>0.7259</td>
+					<td>0.0551</td>
+				  </tr>
+				  <tr>
+					<td>ViTALSeg w/o Augmentations</td>
+					<td>0.7005</td>
+					<td>0.0683</td>
+				  </tr>
+				  <tr>
+					<td>ViTALSeg w/ Augmentations</td>
+					<td>0.7107</td>
+					<td>0.0636</td>
+				  </tr>
+				</tbody>
+			  </table>
+			</center>
+			<br><br>
+			
+			Despite the fact that all 3 of our models underperformed compared 
+			to HybridGNet, we attribute this to the fact that our models were trained
+			to segment a wider variety of organs and structures, while HybridGNet was
+			trained to segment only the lungs and heart. Future work may include determining how much
+			of the performance gap is due to the generality of our model vs. the fact it was trained on synthetic data.
 
+		</div>
+		
+		</div>
 		<div class="content-margin-container" id="implications_and_limitations">
 				<div class="margin-left-block">
 				</div>
 		    <div class="main-content-block">
-						<h1>Implications and limitations</h1>
-						Let's end with some discussion of the implications and limitations.
+				<h1>Implications and Limitations</h1>
+				Some limitations of this study is due to the evaluation data and time available, we had to limit our model to focus only on the thoracic region of the body. For future work, we’d like to expand to train the model on other parts of the body such as the lower pelvic area and even the head and brain, to make a single tool able to do the segmentation. 
+				<br><br>
+				Additionally, although our evaluation on JSRT provides evidence of real-world generalization, future work should expand this assessment to larger and more diverse datasets, such as MIMIC-CXR, CheXpert, or VinDr-CXR, which include broader patient demographics, imaging protocols, and pathologies. This would help validate model performance under a wider range of clinical scenarios.
+				<br><br>
+				Our model could also be expanded to enable more expressive input queries, such as “Highlight all thoracic organs visible in this view,” or “segment regions associated with pneumonia.”
+				<br><br>
+				Despite these limitations, our results demonstrate the potential of using synthetic data to train a multimodal segmentation model that can generalize to real-world X-ray images. By leveraging the strengths of both vision and language models, we believe that ViTalSeg can serve as a valuable tool for radiologists and medical professionals in their diagnostic workflows.
+				The link to our code is <a href="https://github.com/alvinzhengq/xray-segmentation/tree/main">here</a>.
 		    </div>
-		    <div class="margin-right-block">
-		    </div>
+			
 		</div>
 
 		<div class="content-margin-container" id="citations">
@@ -317,13 +597,20 @@
 		    <div class="main-content-block">
 						<div class='citation' id="references" style="height:auto"><br>
 							<span style="font-size:16px">References:</span><br><br>
-							<a id="ref_1"></a>[1] <a href="https://en.wikipedia.org/wiki/Allegory_of_the_cave">Allegory of the Cave</a>, Plato, c. 375 BC<br><br>
-							<a id="ref_2"></a>[2] <a href="">A Human-Level AGI</a>, OpenAI, 2025<br><br>
-						</div>
+							<a id="ref_1"></a>[1] <a href="https://www.ncbi.nlm.nih.gov/books/NBK565865/">X-ray Radiographic Patient Positioning</a>, Tafti, Amin, 2022<br><br>
+							<a id="ref_2"></a>[2] <a href="https://doi.org/10.1038/s41598-024-73363-2">Adversarial robustness improvement for X-ray bone segmentation using synthetic data created from computed tomography scans</a>, Fok, W.Y.R., 2024<br><br>
+							<a id="ref_3"></a>[3] <a href="https://arxiv.org/pdf/2208.12737">Fast Auto-Differentiable Digitally Reconstructed
+								Radiographs for Solving Inverse Problems in
+								Intraoperative Imaging</a>, Gopalakrishnan, Vivek, 2022<br><br>
+							<a id="ref_4"></a>[4] <a href="https://huggingface.co/microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext">Domain-Specific Language Model Pretraining for Biomedical Natural Language Processing</a>, Gu, Yu, 2020<br><br>
+							<a id="ref_5"></a>[5] <a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9963582&tag=1">Improving Anatomical Plausibility in Medical
+								Image Segmentation via Hybrid Graph Neural
+								Networks: Applications to Chest X-Ray Analysis</a>, Gaggion, Nicolás, 2022<br><br>
+							<a id="ref_6"></a>[6] <a href="http://db.jsrt.or.jp/eng.php">
+								Digital Image Database</a>, The Japanese Society of Radiological Technology, 1998<br><br>
+							</div>
 		    </div>
-		    <div class="margin-right-block">
-            <!-- margin notes for reference block here -->
-		    </div>
+			
 		</div>
 
 	</body>
